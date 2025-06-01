@@ -1,0 +1,67 @@
+# Workflow untuk membangun dan menerapkan AstroJS ke GitHub Pages menggunakan pnpm
+name: Deploy Astro site to Pages
+
+on:
+  # Jalankan saat ada push ke branch utama (main)
+  push:
+    branches: ["main"]
+
+  # Bisa dijalankan secara manual dari tab Actions
+  workflow_dispatch:
+
+# Hak akses token GitHub untuk memungkinkan deployment ke Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Pastikan hanya satu proses deployment berjalan
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10 # Sesuaikan dengan versi pnpm yang digunakan
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build with Astro
+        run: pnpm astro build --site "${{ steps.pages.outputs.origin }}" --base "${{ steps.pages.outputs.base_path }}"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
