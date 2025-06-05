@@ -1,0 +1,67 @@
+---
+// src/layouts/BaseLayout.astro
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'; //
+
+interface Props {
+	title?: string;
+	description?: string;
+	heroImage?: string;
+}
+
+const {
+	title = SITE_TITLE, //
+	description = SITE_DESCRIPTION, //
+	heroImage
+} = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" /> {/* Ganti dengan favicon Anda */}
+	<meta name="generator" content={Astro.generator} />
+
+	<title>{title}</title>
+	<meta name="description" content={description} />
+
+    {/* Canonical URL */}
+	<link rel="canonical" href={canonicalURL} />
+
+	{/* Open Graph / Facebook */}
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={canonicalURL} />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	{heroImage && <meta property="og:image" content={new URL(heroImage, Astro.site)} />}
+
+	{/* Twitter */}
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content={canonicalURL} />
+	<meta property="twitter:title" content={title} />
+	<meta property="twitter:description" content={description} />
+	{heroImage && <meta property="twitter:image" content={new URL(heroImage, Astro.site)} />}
+
+    <link rel="stylesheet" href="/src/styles/global.css"> {/* Pastikan path ini benar */}
+</head>
+<body>
+	<Header />
+	<main>
+		<slot /> {/* Konten halaman akan dimasukkan di sini */}
+	</main>
+	<Footer />
+    <style is:global>
+        /* Anda bisa menambahkan style global tambahan di sini jika diperlukan,
+           misalnya untuk class helper */
+        .text-center {
+            text-align: center;
+        }
+        .mt-2 {
+            margin-top: 2rem;
+        }
+    </style>
+</body>
+</html>

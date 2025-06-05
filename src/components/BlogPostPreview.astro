@@ -1,0 +1,111 @@
+---
+// src/components/BlogPostPreview.astro
+interface Props {
+	post: {
+		id: string;
+		data: {
+			title: string;
+			description: string;
+			pubDate: Date;
+			heroImage?: string;
+		};
+	};
+}
+const { post } = Astro.props;
+const { title, description, pubDate, heroImage } = post.data;
+const formattedDate = new Date(pubDate).toLocaleDateString('id-ID', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+---
+<article class="post-preview">
+    {heroImage && (
+        <a href={`/blog/${post.id}/`} aria-hidden="true" tabindex="-1">
+            <img src={heroImage} alt={`Gambar hero untuk ${title}`} class="hero-image" width="300" height="180"/>
+        </a>
+    )}
+    <div class="content">
+        <h3 class="title"><a href={`/blog/${post.id}/`}>{title}</a></h3>
+        <p class="date">{formattedDate}</p>
+        <p class="description">{description}</p>
+        <a href={`/blog/${post.id}/`} class="read-more button">Baca Selengkapnya &rarr;</a>
+    </div>
+</article>
+
+<style>
+    .post-preview {
+        background-color: var(--color-surface);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2em;
+        overflow: hidden; /* Untuk memastikan border-radius pada gambar */
+        transition: box-shadow 0.3s ease;
+        display: flex; /* Untuk layout horizontal jika ada gambar */
+        flex-direction: column; /* Default untuk mobile */
+    }
+    .post-preview:hover {
+        box-shadow: var(--shadow-lg);
+    }
+    .hero-image {
+        width: 100%;
+        height: 200px; /* Tinggi tetap untuk konsistensi */
+        object-fit: cover; /* Memastikan gambar mengisi area tanpa distorsi */
+        border-top-left-radius: var(--border-radius); /* Hanya jika gambar di atas */
+        border-top-right-radius: var(--border-radius);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-bottom: 0;
+    }
+    .content {
+        padding: 1.5em;
+    }
+    .title {
+        margin-top: 0;
+        margin-bottom: 0.25em;
+        font-size: 1.5em;
+    }
+    .title a {
+        color: var(--color-text-primary);
+        text-decoration: none;
+    }
+    .title a:hover {
+        color: var(--color-primary);
+    }
+    .date {
+        font-size: 0.9em;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.75em;
+    }
+    .description {
+        margin-bottom: 1em;
+        color: var(--color-text-secondary);
+        /* Batasi jumlah baris deskripsi jika perlu */
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Tampilkan maksimal 3 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .read-more {
+        font-size: 0.9em;
+    }
+
+    /* Layout horizontal untuk desktop */
+    @media (min-width: 768px) {
+        .post-preview {
+            flex-direction: row;
+        }
+        .hero-image {
+            width: 300px; /* Lebar tetap untuk gambar di desktop */
+            height: auto; /* Biarkan tinggi menyesuaikan */
+            min-height: 180px; /* Minimal tinggi agar tidak terlalu kecil */
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+            border-top-right-radius: 0;
+        }
+        .content {
+            flex: 1; /* Konten mengambil sisa ruang */
+        }
+    }
+</style>

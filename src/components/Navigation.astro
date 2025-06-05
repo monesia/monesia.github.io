@@ -1,0 +1,41 @@
+---
+// src/components/Navigation.astro
+const navLinks = [
+    { href: "/", text: "Home" },
+    { href: "/blog", text: "Blog" },
+    { href: "/about",text: "About"},
+    // Tambahkan link lain jika perlu, misal About, Contact
+];
+---
+<nav>
+    <ul>
+        {navLinks.map(link => (
+            <li><a href={link.href}>{link.text}</a></li>
+        ))}
+    </ul>
+</nav>
+
+<style>
+    nav {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Atau flex-end untuk rata kanan */
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1.5em;
+    }
+    li a {
+        font-weight: var(--font-weight-medium);
+        color: var(--color-background); /* Sesuaikan jika header terang */
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    li a:hover {
+        color: var(--color-accent); /* Sesuaikan jika header terang */
+        text-decoration: none;
+    }
+</style>
