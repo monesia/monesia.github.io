@@ -16,28 +16,11 @@ if (frontmatter.updatedDate) {
         day: 'numeric',
     });
 }
+const tags = frontmatter.tags || [];
 ---
-<BaseLayout title={frontmatter.title} description={frontmatter.description} heroImage={frontmatter.heroImage}>
-	<article class="prose">
-		{frontmatter.heroImage && (
-			<img src={frontmatter.heroImage} alt={`Gambar hero untuk ${frontmatter.title}`} class="post-hero-image" />
-		)}
-		<h1 class="post-title">{frontmatter.title}</h1>
-		<p class="post-meta">
-			Dipublikasikan pada: {formattedDate}
-			{updatedDateFormatted && ` | Diperbarui pada: ${updatedDateFormatted}`}
-		</p>
-		<hr class="meta-divider"/>
-		<div class="post-content">
-			<slot /> {/* Konten Markdown akan masuk di sini */}
-		</div>
-	</article>
-    <nav class="post-navigation">
-        <a href="/blog" class="button">&larr; Kembali ke Semua Postingan</a>
-        </nav>
-</BaseLayout>
 
-<style is:global> /* Menggunakan is:global agar style bisa menargetkan elemen dari Markdown */
+{/* PINDAHKAN STYLE KE SINI, SEBELUM BASELAYOUT */}
+<style is:global>
 	.prose {
 		max-width: 720px; /* Konten artikel lebih sempit untuk readability */
 		margin-left: auto;
@@ -62,8 +45,30 @@ if (frontmatter.updatedDate) {
         margin-bottom: 0.5em;
     }
     .meta-divider {
-        margin-top: 0.5em;
         margin-bottom: 2.5em;
+    }
+
+    .tags-container {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+    }
+    .tag-badge {
+        display: inline-block;
+        background-color: var(--color-accent);
+        color: var(--color-text-primary);
+        padding: 0.3em 0.8em;
+        border-radius: 15px;
+        font-size: 0.85em;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+    .tag-badge:hover {
+        transform: translateY(-2px);
+        background-color: var(--color-secondary);
+        color: var(--color-background);
     }
 
 	/* Styling untuk konten Markdown di dalam .prose */
@@ -80,12 +85,12 @@ if (frontmatter.updatedDate) {
 		margin-bottom: 0.6em;
 	}
     .prose p {
-        font-size: 1.1rem; /* Sedikit perbesar font artikel */
+        font-size: 1.1rem;
         line-height: 1.7;
         color: var(--color-text-primary);
     }
     .prose a {
-        color: var(--color-secondary); /* Aksen berbeda untuk link dalam artikel */
+        color: var(--color-secondary);
         text-decoration: underline;
     }
     .prose a:hover {
@@ -112,3 +117,32 @@ if (frontmatter.updatedDate) {
         }
     }
 </style>
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description} heroImage={frontmatter.heroImage}>
+	<article class="prose">
+		{frontmatter.heroImage && (
+			<img src={frontmatter.heroImage} alt={`Gambar hero untuk ${frontmatter.title}`} class="post-hero-image" />
+		)}
+		<h1 class="post-title">{frontmatter.title}</h1>
+		<p class="post-meta">
+			Dipublikasikan pada: {formattedDate}
+			{updatedDateFormatted && ` | Diperbarui pada: ${updatedDateFormatted}`}
+		</p>
+		{tags.length > 0 && (
+			<div class="tags-container">
+				{tags.map(tag => (
+					<a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-badge">
+						{tag}
+					</a>
+				))}
+			</div>
+		)}
+		<hr class="meta-divider"/>
+		<div class="post-content">
+			<slot />
+		</div>
+	</article>
+    <nav class="post-navigation">
+        <a href="/blog" class="button">&larr; Kembali ke Semua Postingan</a>
+    </nav>
+</BaseLayout>

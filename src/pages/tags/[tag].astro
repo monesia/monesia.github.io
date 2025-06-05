@@ -1,0 +1,62 @@
+---
+// src/pages/tags/[tag].astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPostPreview from '../../components/BlogPostPreview.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const allTags = new Set<string>();
+  allPosts.forEach(post => {
+    (post.data.tags || []).forEach(tag => allTags.add(tag));
+  });
+
+  return Array.from(allTags).map(tag => {
+    const filteredPosts = allPosts.filter(post => (post.data.tags || []).includes(tag));
+    const slugifiedTag = tag.toLowerCase().replace(/\s+/g, '-'); // Buat slug dari tag
+    return {
+      params: { tag: slugifiedTag },
+      props: {
+        tagName: tag,
+        posts: filteredPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+      },
+    };
+  });
+}
+
+const { tag: slugifiedTag } = Astro.params;
+const { tagName, posts } = Astro.props;
+---
+<BaseLayout title={`Postingan dengan tag: ${tagName} - ${SITE_TITLE}`} description={`Menampilkan semua postingan yang diberi tag "${tagName}"`}>
+  <section class="tag-page-header">
+    <h1>Postingan dengan Tag: <span>{tagName}</span></h1>
+  </section>
+
+  <section class="post-list">
+    {posts.length === 0 ? (
+      <p>Tidak ada postingan yang ditemukan dengan tag ini.</p>
+    ) : (
+      posts.map(post => <BlogPostPreview post={post} />)
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-page-header {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+  .tag-page-header h1 {
+    font-size: 2.2em;
+    color: var(--color-text-primary);
+  }
+  .tag-page-header h1 span {
+    color: var(--color-primary); /* Warna aksen untuk nama tag */
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.1em;
+  }
+  .post-list {
+    /* Style untuk post-list bisa sama dengan di index.astro atau blog.astro */
+  }
+</style>

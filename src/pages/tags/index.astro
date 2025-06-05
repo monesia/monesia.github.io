@@ -1,0 +1,93 @@
+---
+// src/pages/tags/index.astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../../consts';
+
+const allPosts = await getCollection('blog');
+const tagCounts: Record<string, number> = {};
+allPosts.forEach(post => {
+  (post.data.tags || []).forEach(tag => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+// Urutkan tag berdasarkan jumlah postingan (opsional) atau abjad
+const sortedTags = Object.entries(tagCounts).sort(([, countA], [, countB]) => countB - countA);
+// const sortedTags = Object.entries(tagCounts).sort(([tagA], [tagB]) => tagA.localeCompare(tagB)); // Urut abjad
+---
+<BaseLayout title={`Semua Tags - ${SITE_TITLE}`} description="Daftar semua tag yang digunakan di blog Monesia.">
+  <section class="all-tags-header">
+    <h1>Semua Tags</h1>
+    <p>Telusuri postingan berdasarkan kategori atau sektor.</p>
+  </section>
+
+  <section class="tags-list-container">
+    {sortedTags.length === 0 ? (
+      <p>Belum ada tag yang digunakan.</p>
+    ) : (
+      <ul class="tags-cloud">
+        {sortedTags.map(([tag, count]) => (
+          <li>
+            <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-cloud-item">
+              {tag} <span class="tag-count">({count})</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .all-tags-header {
+    text-align: center;
+    margin-bottom: 2.5em;
+  }
+  .all-tags-header h1 {
+    color: var(--color-primary);
+  }
+
+  .tags-list-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .tags-cloud {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em; /* Jarak antar tag */
+  }
+
+  .tags-cloud li {
+    margin-bottom: 0.5em;
+  }
+
+  .tag-cloud-item {
+    display: inline-block;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    padding: 0.6em 1.2em;
+    border-radius: var(--border-radius);
+    font-size: 1em; /* Ukuran dasar */
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+  }
+  .tag-cloud-item:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+  }
+  .tag-count {
+    font-size: 0.85em;
+    color: var(--color-text-secondary);
+  }
+  .tag-cloud-item:hover .tag-count {
+    color: var(--color-surface);
+  }
+</style>

@@ -8,11 +8,12 @@ interface Props {
 			description: string;
 			pubDate: Date;
 			heroImage?: string;
+			tags?: string[]; // Tambahkan tags
 		};
 	};
 }
 const { post } = Astro.props;
-const { title, description, pubDate, heroImage } = post.data;
+const { title, description, pubDate, heroImage, tags = [] } = post.data; // Ambil tags
 const formattedDate = new Date(pubDate).toLocaleDateString('id-ID', {
 	year: 'numeric',
 	month: 'long',
@@ -28,6 +29,14 @@ const formattedDate = new Date(pubDate).toLocaleDateString('id-ID', {
     <div class="content">
         <h3 class="title"><a href={`/blog/${post.id}/`}>{title}</a></h3>
         <p class="date">{formattedDate}</p>
+        {tags.length > 0 && (
+            <div class="tags-preview-container">
+                {tags.slice(0, 3).map(tag => ( // Tampilkan beberapa tag saja, misal 3
+                    <span class="tag-preview-badge">{tag}</span>
+                ))}
+                {tags.length > 3 && <span class="tag-preview-badge">...</span>}
+            </div>
+        )}
         <p class="description">{description}</p>
         <a href={`/blog/${post.id}/`} class="read-more button">Baca Selengkapnya &rarr;</a>
     </div>
@@ -108,4 +117,19 @@ const formattedDate = new Date(pubDate).toLocaleDateString('id-ID', {
             flex: 1; /* Konten mengambil sisa ruang */
         }
     }
+    .tags-preview-container {
+        margin-bottom: 0.75em;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4em;
+    }
+    .tag-preview-badge {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-secondary);
+        padding: 0.2em 0.6em;
+        border-radius: 10px;
+        font-size: 0.8em;
+    }
+
 </style>
