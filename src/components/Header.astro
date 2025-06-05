@@ -1,54 +1,74 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+
+// SVG Ikon untuk Hamburger (3 garis)
+const hamburgerIcon = `
+  <svg class="icon-hamburger" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
+    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+  </svg>
+`;
+
+// SVG Ikon untuk Tombol Close (X)
+const closeIcon = `
+  <svg class="icon-close" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true" style="display:none;">
+    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+  </svg>
+`;
 ---
 
 <header>
     <nav>
-        <h2><a href="/">{SITE_TITLE}</a></h2>
-        <div class="internal-links">
-            <HeaderLink href="/">Home</HeaderLink>
-            <HeaderLink href="/blog">Blog</HeaderLink>
-            <HeaderLink href="/about">About</HeaderLink>
+        <div class="nav-left">
+            <h2><a href="/">{SITE_TITLE}</a></h2>
         </div>
-        <div class="social-links">
-            {/* Link ke IDX.co.id */}
-            <a href="https://www.idx.co.id" target="_blank" rel="noopener noreferrer" class="external-link-item">
-                <span class="sr-only">Kunjungi IDX (Bursa Efek Indonesia)</span>
-                <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="currentColor">
-                  <path d="M1.5 14V2.5h1V14zm3 0V6.5h1V14zm3 0V9.5h1V14zm3 0V5.5h1V14zm3 0V11.5h1V14zM0 15.5V14H.5v.5c0 .28.22.5.5.5h14c.28 0 .5-.22.5-.5V14h.5v1.5c0 .83-.67 1.5-1.5 1.5h-14C.67 17 0 16.33 0 15.5z"/>
-                </svg>
-            </a>
-            {/* Link ke KSEI */}
-            <a href="https://www.ksei.co.id" target="_blank" rel="noopener noreferrer" class="external-link-item">
-                <span class="sr-only">Kunjungi KSEI (Kustodian Sentral Efek Indonesia)</span>
-                <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="currentColor">
-                  <path d="M4 2.5v11h1.5V9.207l3.646 3.647.708-.708L6.207 8.5l3.647-3.646-.708-.708L5.5 7.293V2.5H4zm5.576 0L12.5 8.012V2.5h-2.924zM9.5 3.207L11.793 5.5H9.5V3.207zm3 5.5L9.576 14H12.5V8.707zM9.5 13.5V11.207L11.793 13.5H9.5z"/>
-                </svg>
-            </a>
-            {/* Link ke TradingView */}
-            <a href="https://www.tradingview.com" target="_blank" rel="noopener noreferrer" class="external-link-item">
-                <span class="sr-only">Kunjungi TradingView</span>
-                <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="2,12 5,7 8,10 11,4 14,8" />
-                  <line x1="1" y1="15" x2="15" y2="15" stroke-width="1"/>
-                </svg>
-            </a>
+
+        <div class="nav-right">
+            {/* Tombol Hamburger - hanya terlihat di layar kecil */}
+            <button class="hamburger-menu" aria-label="Buka menu" aria-expanded="false" aria-controls="internal-links-menu">
+                <Fragment set:html={hamburgerIcon} />
+                <Fragment set:html={closeIcon} />
+            </button>
+
+            {/* Link Internal - akan disembunyikan/ditampilkan */}
+            <div class="internal-links" id="internal-links-menu">
+                <HeaderLink href="/">Home</HeaderLink>
+                <HeaderLink href="/blog">Blog</HeaderLink>
+                <HeaderLink href="/about">About</HeaderLink>
+            </div>
+
+            {/* Link Sosial Media dari jawaban sebelumnya */}
+            <div class="social-links">
+                <a href="https://www.idx.co.id" target="_blank" rel="noopener noreferrer" title="IDX (Bursa Efek Indonesia)">
+                    <span class="sr-only">Kunjungi IDX (Bursa Efek Indonesia)</span>
+                    <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="currentColor"><path d="M1.5 14V2.5h1V14zm3 0V6.5h1V14zm3 0V9.5h1V14zm3 0V5.5h1V14zm3 0V11.5h1V14zM0 15.5V14H.5v.5c0 .28.22.5.5.5h14c.28 0 .5-.22.5-.5V14h.5v1.5c0 .83-.67 1.5-1.5 1.5h-14C.67 17 0 16.33 0 15.5z"/></svg>
+                </a>
+                <a href="https://www.ksei.co.id" target="_blank" rel="noopener noreferrer" title="KSEI (Kustodian Sentral Efek Indonesia)">
+                    <span class="sr-only">Kunjungi KSEI (Kustodian Sentral Efek Indonesia)</span>
+                    <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="currentColor"><path d="M4 2.5v11h1.5V9.207l3.646 3.647.708-.708L6.207 8.5l3.647-3.646-.708-.708L5.5 7.293V2.5H4zm5.576 0L12.5 8.012V2.5h-2.924zM9.5 3.207L11.793 5.5H9.5V3.207zm3 5.5L9.576 14H12.5V8.707zM9.5 13.5V11.207L11.793 13.5H9.5z"/></svg>
+                </a>
+                <a href="https://www.tradingview.com" target="_blank" rel="noopener noreferrer" title="TradingView">
+                    <span class="sr-only">Kunjungi TradingView</span>
+                    <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,12 5,7 8,10 11,4 14,8" /><line x1="1" y1="15" x2="15" y2="15" stroke-width="1"/></svg>
+                </a>
+            </div>
         </div>
     </nav>
 </header>
+
 <style>
     header {
         margin: 0;
         padding: 0 1em;
         background: white;
         box-shadow: 0 2px 8px rgba(var(--black), 5%);
+        position: relative; /* Penting untuk positioning menu mobile */
+        z-index: 100; /* Pastikan header di atas konten lain jika menu terbuka */
     }
     h2 {
         margin: 0;
         font-size: 1em;
     }
-
     h2 a,
     h2 a.active {
         text-decoration: none;
@@ -57,39 +77,107 @@ import { SITE_TITLE } from '../consts';
         display: flex;
         align-items: center;
         justify-content: space-between;
+        min-height: 4rem; /* Memberi tinggi minimal pada nav */
     }
-    nav a { /* Ini berlaku untuk link internal dan eksternal jika tidak dioverride */
+    /* Kelompokkan link internal dan sosial di sisi kanan */
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1em; /* Jarak antara grup internal-links/social-links dan tombol hamburger */
+    }
+
+    .internal-links {
+        display: flex; /* Default untuk layar besar */
+        align-items: center;
+        gap: 0.5em;
+    }
+    /* Style untuk HeaderLink.astro (nav a internal) */
+    .internal-links :global(a) { /* Menggunakan :global untuk menargetkan 'a' di dalam HeaderLink */
         padding: 1em 0.5em;
         color: var(--black);
         border-bottom: 4px solid transparent;
         text-decoration: none;
-        font-weight: 500; 
+        font-weight: 500;
     }
-    nav a.active { /* Ini untuk HeaderLink internal */
+    .internal-links :global(a.active) {
         text-decoration: none;
         border-bottom-color: var(--accent);
     }
-    .social-links { 
+
+    .social-links {
         display: flex;
-        align-items: center; /* Menyelaraskan ikon secara vertikal */
-        gap: 0.75em; /* Memberi sedikit jarak antar ikon, bisa disesuaikan */
+        align-items: center;
+        gap: 0.75em;
     }
-    .social-links a.external-link-item { 
-        padding: 0.5em; /* Mengurangi padding default dari nav a agar ikon tidak terlalu jauh */
-        line-height: 0; /* Membantu agar ikon lebih rapi jika ada sisa spasi vertikal */
+    .social-links a {
+        padding: 0.5em;
+        color: rgb(var(--gray));
+        line-height: 0; 
+    }
+    .social-links a:hover svg {
+        opacity: 0.7;
     }
 
-    .social-links a.external-link-item:hover svg {
-        opacity: 0.7; /* Contoh efek hover sederhana pada SVG */
+    .hamburger-menu {
+        display: none; /* Sembunyikan di layar besar */
+        background: none;
+        border: none;
+        padding: 0.5em;
+        margin: 0; /* Hilangkan margin default tombol */
+        cursor: pointer;
+        z-index: 1001; /* Di atas menu dropdown */
+        color: var(--black); /* Warna ikon hamburger */
+    }
+    .hamburger-menu svg { /* Memastikan SVG di dalam tombol berukuran benar */
+        display: block; 
     }
 
-    @media (max-width: 720px) {
+    /* --- STYLES UNTUK LAYAR KECIL (RESPONSIVE) --- */
+    @media (max-width: 768px) { /* Anda bisa sesuaikan breakpoint 768px ini */
+        .hamburger-menu {
+            display: block; /* Tampilkan tombol hamburger */
+        }
+
+        .internal-links {
+            display: none; /* Sembunyikan menu link internal secara default */
+            flex-direction: column;
+            position: absolute;
+            top: 100%; /* Tepat di bawah header */
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 0.5em 0; /* Padding atas-bawah untuk menu dropdown */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-top: 1px solid #eee;
+        }
+
+        .internal-links.is-open {
+            display: flex; /* Tampilkan menu jika class 'is-open' ditambahkan oleh JS */
+        }
+
+        /* Style untuk link di dalam menu dropdown mobile */
+        .internal-links :global(a) {
+            padding: 0.8em 1em;
+            width: 100%;
+            text-align: left; /* Atau 'center' jika lebih suka */
+            border-bottom: 1px solid #f0f0f0; /* Garis pemisah antar link */
+        }
+        .internal-links :global(a:last-child) {
+            border-bottom: none; /* Hapus border untuk item terakhir */
+        }
+        .internal-links :global(a.active) {
+             border-left: 4px solid var(--accent); /* Indikator aktif di menu mobile */
+             border-bottom-color: #f0f0f0; /* Override border-bottom dari desktop */
+             padding-left: calc(1em - 4px);
+        }
+
+
         .social-links {
-            display: none;
+            display: none; /* Link sosial media juga disembunyikan di header mobile */
+                               /* Jika ingin tetap ada, jangan set display: none */
         }
     }
-
-    /* sr-only class untuk menyembunyikan teks secara visual tapi tetap bisa dibaca screen reader */
+    /* sr-only class untuk aksesibilitas */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -102,3 +190,25 @@ import { SITE_TITLE } from '../consts';
       border-width: 0;
     }
 </style>
+
+<script>
+    const hamburgerButton = document.querySelector('.hamburger-menu');
+    const internalLinksMenu = document.querySelector('#internal-links-menu');
+    const iconHamburger = hamburgerButton.querySelector('.icon-hamburger');
+    const iconClose = hamburgerButton.querySelector('.icon-close');
+
+    hamburgerButton.addEventListener('click', () => {
+        const isOpen = internalLinksMenu.classList.toggle('is-open');
+        hamburgerButton.setAttribute('aria-expanded', isOpen.toString());
+
+        if (isOpen) {
+            iconHamburger.style.display = 'none';
+            iconClose.style.display = 'block';
+            hamburgerButton.setAttribute('aria-label', 'Tutup menu');
+        } else {
+            iconHamburger.style.display = 'block';
+            iconClose.style.display = 'none';
+            hamburgerButton.setAttribute('aria-label', 'Buka menu');
+        }
+    });
+</script>
