@@ -1,21 +1,47 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
-import { render } from 'astro:content';
+// src/pages/blog/[slug].astro
+import { getCollection } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro'; // Sesuaikan path jika perlu
 
-export async function getStaticPaths() {
-	const posts = await getCollection('blog');
+export async function getStaticPathsold() {
+	const posts = await getCollection('blog'); //
 	return posts.map((post) => ({
-		params: { slug: post.id },
+		params: { slug: post.id }, // Menggunakan post.id sebagai slug
 		props: post,
 	}));
 }
-type Props = CollectionEntry<'blog'>;
+export async function getStaticPaths() {
+  console.log("\n--- [DEBUG] Memulai pembuatan path untuk Blog ---");
+
+  const posts = await getCollection('blog');
+
+  // Pengecekan jika tidak ada postingan ditemukan
+  if (!posts || posts.length === 0) {
+    console.log("--- [DEBUG] Peringatan: Tidak ada postingan yang ditemukan di koleksi 'blog'. ---");
+    return [];
+  }
+
+  const paths = posts.map((post) => {
+    // Baris ini akan mencetak ID dan SLUG yang sebenarnya.
+    // Pastikan Anda menggunakan backtick ` (biasanya di sebelah kiri angka 1), bukan kutip biasa ' atau ".
+    console.log(`Memproses: ID = "${post.id}", Slug = "${post.slug}"`);
+
+    return {
+      params: {
+        slug: post.slug, // Menggunakan post.slug adalah praktik terbaik
+      },
+      props: post,
+    };
+  });
+
+  console.log("--- [DEBUG] Selesai pembuatan path ---\n");
+  return paths;
+}
+type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content } = await post.render();
 ---
-
-<BlogPost {...post.data}>
+<PostLayout frontmatter={post.data}>
 	<Content />
-</BlogPost>
+</PostLayout>

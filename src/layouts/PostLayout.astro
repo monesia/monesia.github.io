@@ -1,0 +1,148 @@
+---
+// src/layouts/PostLayout.astro
+import BaseLayout from './BaseLayout.astro';
+
+const { frontmatter } = Astro.props;
+const formattedDate = new Date(frontmatter.pubDate).toLocaleDateString('id-ID', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+let updatedDateFormatted;
+if (frontmatter.updatedDate) {
+    updatedDateFormatted = new Date(frontmatter.updatedDate).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+const tags = frontmatter.tags || [];
+---
+
+{/* PINDAHKAN STYLE KE SINI, SEBELUM BASELAYOUT */}
+<style is:global>
+	.prose {
+		max-width: 720px; /* Konten artikel lebih sempit untuk readability */
+		margin-left: auto;
+		margin-right: auto;
+	}
+    .post-hero-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+        margin-bottom: 2em;
+        box-shadow: var(--shadow-lg);
+    }
+    .post-title {
+        font-size: 2.8em; /* Lebih besar untuk judul artikel */
+        margin-bottom: 0.25em;
+        color: var(--color-primary);
+    }
+    .post-meta {
+        font-size: 0.9em;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5em;
+    }
+    .meta-divider {
+        margin-bottom: 2.5em;
+    }
+
+    .tags-container {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+    }
+    .tag-badge {
+        display: inline-block;
+        background-color: var(--color-accent);
+        color: var(--color-text-primary);
+        padding: 0.3em 0.8em;
+        border-radius: 15px;
+        font-size: 0.85em;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+    .tag-badge:hover {
+        transform: translateY(-2px);
+        background-color: var(--color-secondary);
+        color: var(--color-background);
+    }
+
+	/* Styling untuk konten Markdown di dalam .prose */
+	.prose h2 {
+		font-size: 1.8em;
+		margin-top: 2em;
+		margin-bottom: 0.8em;
+		padding-bottom: 0.3em;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.prose h3 {
+		font-size: 1.5em;
+		margin-top: 1.8em;
+		margin-bottom: 0.6em;
+	}
+    .prose p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: var(--color-text-primary);
+    }
+    .prose a {
+        color: var(--color-secondary);
+        text-decoration: underline;
+    }
+    .prose a:hover {
+        color: var(--color-primary);
+    }
+    .prose ul, .prose ol {
+        padding-left: 1.5em;
+        margin-bottom: 1.5em;
+    }
+    .prose li {
+        margin-bottom: 0.5em;
+    }
+    .post-navigation {
+        margin-top: 3em;
+        text-align: center;
+    }
+
+    @media (max-width: 720px) {
+        .post-title {
+            font-size: 2.2em;
+        }
+        .prose p {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description} heroImage={frontmatter.heroImage}>
+	<article class="prose">
+		{frontmatter.heroImage && (
+			<img src={frontmatter.heroImage} alt={`Gambar hero untuk ${frontmatter.title}`} class="post-hero-image" />
+		)}
+		<h1 class="post-title">{frontmatter.title}</h1>
+		<p class="post-meta">
+			Dipublikasikan pada: {formattedDate}
+			{updatedDateFormatted && ` | Diperbarui pada: ${updatedDateFormatted}`}
+		</p>
+		{tags.length > 0 && (
+			<div class="tags-container">
+				{tags.map(tag => (
+					<a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-badge">
+						{tag}
+					</a>
+				))}
+			</div>
+		)}
+		<hr class="meta-divider"/>
+		<div class="post-content">
+			<slot />
+		</div>
+	</article>
+    <nav class="post-navigation">
+        <a href="/blog" class="button">&larr; Kembali ke Semua Postingan</a>
+    </nav>
+</BaseLayout>

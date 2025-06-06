@@ -123,11 +123,11 @@ const pageSpecificDescription = `Selamat datang di ${SITE_TITLE}. ${SITE_DESCRIP
                 {
                   postsToShowOnHome.map((post) => (
                     <li class="post-item">
-                      <a href={`/blog/${post.id}/`} class="post-link">
+                      <a href={`/blog/${post.slug}/`} class="post-link">
                       <h3 class="post-title">{post.data.title}</h3>
                       </a>
                       {post.data.heroImage && (
-                        <a href={`/blog/${post.id}/`} aria-hidden="true" tabindex="-1">
+                        <a href={`/blog/${post.slug}/`} aria-hidden="true" tabindex="-1">
                           <img 
                             src={post.data.heroImage} 
                             alt={`Gambar untuk ${post.data.title}`} 
@@ -143,7 +143,7 @@ const pageSpecificDescription = `Selamat datang di ${SITE_TITLE}. ${SITE_DESCRIP
                       {post.data.description && (
                         <p class="post-description">{post.data.description}</p>
                       )}
-                      <a href={`/blog/${post.id}/`} class="read-more-link">
+                      <a href={`/blog/${post.slug}/`} class="read-more-link">
                         Baca Selengkapnya &rarr;
                       </a>
                     </li>
