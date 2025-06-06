@@ -2,11 +2,9 @@
 title: 'Analisa Saham PICO'
 description: 'Analisis Top-Down Saham PT Pelangi Indah Canindo Tbk (PICO) Berdasarkan Laporan Keuangan Kuartal I 2025'
 pubDate: 'Jun 08 2025'
-heroImage: '/blog-placeholder-3.jpg'
+heroImage: '/pico.png'
 tags: ['1Q25', 'PICO'] # Contoh tags
 ---
-Tentu, ini dia laporan penelitian dalam format Markdown:
-
 # Analisis Top-Down Saham PT Pelangi Indah Canindo Tbk (PICO) Berdasarkan Laporan Keuangan Kuartal I 2025: Valuasi dan Prospek
 
 ## 1. Ringkasan Eksekutif
